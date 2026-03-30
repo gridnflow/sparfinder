@@ -3,12 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 /// AdMob 배너 광고 위젯
-/// 테스트 ID: ca-app-pub-3940256099942544/6300978111
-/// 실제 배포 시 AdMob 콘솔에서 발급받은 Ad Unit ID로 교체할 것
 class AdBannerWidget extends StatefulWidget {
   final double height;
+  final String adUnitId;
 
-  const AdBannerWidget({super.key, this.height = 60});
+  static const String bottomBannerId = 'ca-app-pub-6139362725426823/5690077113';
+  static const String feedBannerId = 'ca-app-pub-6139362725426823/3290785697';
+
+  const AdBannerWidget({
+    super.key,
+    this.height = 60,
+    this.adUnitId = bottomBannerId,
+  });
 
   @override
   State<AdBannerWidget> createState() => _AdBannerWidgetState();
@@ -17,9 +23,6 @@ class AdBannerWidget extends StatefulWidget {
 class _AdBannerWidgetState extends State<AdBannerWidget> {
   BannerAd? _bannerAd;
   bool _isLoaded = false;
-
-  // TODO: 실제 배포 전 AdMob 콘솔의 Ad Unit ID로 교체
-  static const String _adUnitId = 'ca-app-pub-3940256099942544/6300978111';
 
   @override
   void initState() {
@@ -31,7 +34,7 @@ class _AdBannerWidgetState extends State<AdBannerWidget> {
     if (!Platform.isAndroid) return;
 
     final banner = BannerAd(
-      adUnitId: _adUnitId,
+      adUnitId: widget.adUnitId,
       request: const AdRequest(),
       size: AdSize.banner,
       listener: BannerAdListener(

@@ -264,7 +264,10 @@ class HomeScreen extends ConsumerWidget {
                 if (cardRowCount % 3 == 0 && i + 2 < deals.length) {
                   rows.add(const Padding(
                     padding: EdgeInsets.symmetric(vertical: 4),
-                    child: AdBannerWidget(height: 60),
+                    child: AdBannerWidget(
+                      height: 60,
+                      adUnitId: AdBannerWidget.feedBannerId,
+                    ),
                   ));
                 }
               }

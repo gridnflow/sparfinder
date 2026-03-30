@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/price_formatter.dart';
 import '../../widgets/price_comparison_row.dart';
-import '../../widgets/ad_banner.dart';
 import 'search_providers.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
@@ -273,9 +272,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           );
         }),
 
-        // 광고 배너 — 결과 목록 ��단
-        const SizedBox(height: 12),
-        const AdBannerWidget(height: 60),
         const SizedBox(height: 16),
       ],
     );
