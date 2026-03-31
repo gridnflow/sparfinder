@@ -75,3 +75,6 @@ lib/core/constants/secrets.dart
 android/key.properties
 android/app/*.jks
 android/app/*.keystore
+
+# VS Code launch config (contains API keys)
+.vscode/launch.json
