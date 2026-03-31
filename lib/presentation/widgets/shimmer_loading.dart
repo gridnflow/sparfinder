@@ -140,8 +140,8 @@ class SkeletonCardRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final cardWidth = (constraints.maxWidth - 8) / 2;
-        final cardHeight = cardWidth / 0.57;
+        final cardWidth = ((constraints.maxWidth - 8) / 2).clamp(0.0, double.infinity);
+        final cardHeight = cardWidth > 0 ? cardWidth / 0.57 : 0.0;
         return SizedBox(
           height: cardHeight,
           child: Row(

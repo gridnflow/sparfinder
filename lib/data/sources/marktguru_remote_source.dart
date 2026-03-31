@@ -33,33 +33,47 @@ class MarktguruRemoteSource {
             'Eier', 'Kaffee', 'Nudeln',
           ];
 
-    try {
-      final seen = <String>{};
-      final all = <OfferModel>[];
+    final seen = <String>{};
+    final all = <OfferModel>[];
+    int successCount = 0;
 
-      // 5개씩 배치 처리로 동시 요청 수 제한
-      for (int i = 0; i < keywords.length; i += _batchSize) {
-        final batch = keywords.sublist(i, min(i + _batchSize, keywords.length));
-        final futures = batch.map((kw) => _fetchPage(
-              query: kw,
-              zipCode: zipCode,
-              limit: _weeklyPageSize,
-              offset: 0,
-            ));
-        final results = await Future.wait(futures);
+    // 5개씩 배치 처리, 개별 키워드 실패는 건너뜀
+    for (int i = 0; i < keywords.length; i += _batchSize) {
+      final batch = keywords.sublist(i, min(i + _batchSize, keywords.length));
 
-        for (final list in results) {
-          for (final offer in list) {
-            if (seen.add(offer.id)) all.add(offer);
-          }
+      // 각 키워드를 개별 try-catch로 감싸서 하나 실패해도 나머지 계속 진행
+      final futures = batch.map((kw) async {
+        try {
+          return await _fetchPage(
+            query: kw,
+            zipCode: zipCode,
+            limit: _weeklyPageSize,
+            offset: 0,
+          );
+        } catch (_) {
+          return <OfferModel>[];
+        }
+      });
+
+      final results = await Future.wait(futures);
+
+      for (final list in results) {
+        if (list.isNotEmpty) successCount++;
+        for (final offer in list) {
+          if (seen.add(offer.id)) all.add(offer);
         }
       }
 
-      return all;
-    } on DioException catch (e) {
-      if (_isFallbackError(e)) return OfferModel.generateWeeklyMockDeals();
-      rethrow;
+      // 배치 간 짧은 지연으로 레이트 리밋 방지
+      if (i + _batchSize < keywords.length) {
+        await Future.delayed(const Duration(milliseconds: 300));
+      }
     }
+
+    // 모든 키워드가 실패한 경우에만 목업 데이터 반환
+    if (successCount == 0) return OfferModel.generateWeeklyMockDeals();
+
+    return all;
   }
 
   /// 상품 검색 (전체 페이지 수집)
