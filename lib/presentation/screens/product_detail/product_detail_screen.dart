@@ -7,6 +7,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/price_formatter.dart';
 import '../../../core/constants/supermarket_constants.dart';
 import '../../widgets/price_comparison_row.dart';
+import '../../widgets/shimmer_loading.dart';
 import '../search/search_providers.dart';
 
 class ProductDetailScreen extends ConsumerWidget {
@@ -16,11 +17,12 @@ class ProductDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final savedOffers = ref.watch(savedOffersProvider);
-    final isSaved = savedOffers.contains(offer.id);
+    final savedOfferIds = ref.watch(savedOfferIdsProvider);
+    final isSaved = savedOfferIds.contains(offer.id);
 
-    // 같은 상품 다른 마켓 결과 로드
-    final allOffersAsync = ref.watch(searchResultsProvider);
+    // 같은 상품 다른 마켓 결과 로드 (제품명으로 독립 검색)
+    final allOffersAsync = ref.watch(
+        productComparisonProvider(offer.productName));
 
     return Scaffold(
       body: CustomScrollView(
@@ -31,21 +33,24 @@ class ProductDetailScreen extends ConsumerWidget {
             pinned: true,
             backgroundColor: AppTheme.primaryGreen,
             flexibleSpace: FlexibleSpaceBar(
-              background: offer.imageUrl != null
-                  ? Container(
-                      color: Colors.grey[100],
-                      padding: const EdgeInsets.all(24),
-                      child: CachedNetworkImage(
-                        imageUrl: offer.imageUrl!,
-                        fit: BoxFit.contain,
-                        placeholder: (context, url) => const Center(
-                          child: CircularProgressIndicator(),
+              background: Hero(
+                tag: 'offer_image_${offer.id}',
+                child: offer.imageUrl != null
+                    ? Container(
+                        color: Colors.grey[100],
+                        padding: const EdgeInsets.all(24),
+                        child: CachedNetworkImage(
+                          imageUrl: offer.imageUrl!,
+                          fit: BoxFit.contain,
+                          placeholder: (context, url) => const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                          errorWidget: (context, url, error) =>
+                              _imagePlaceholder(),
                         ),
-                        errorWidget: (context, url, error) =>
-                            _imagePlaceholder(),
-                      ),
-                    )
-                  : _imagePlaceholder(),
+                      )
+                    : _imagePlaceholder(),
+              ),
             ),
             actions: [
               IconButton(
@@ -54,7 +59,7 @@ class ProductDetailScreen extends ConsumerWidget {
                   color: Colors.white,
                 ),
                 onPressed: () =>
-                    ref.read(savedOffersProvider.notifier).toggle(offer.id),
+                    ref.read(savedOffersProvider.notifier).toggle(offer),
               ),
             ],
           ),
@@ -118,8 +123,47 @@ class ProductDetailScreen extends ConsumerWidget {
                   const SizedBox(height: 8),
 
                   allOffersAsync.when(
-                    loading: () =>
-                        const Center(child: CircularProgressIndicator()),
+                    loading: () => ShimmerLoading(
+                      child: Column(
+                        children: List.generate(
+                          3,
+                          (i) => Padding(
+                            padding: const EdgeInsets.only(bottom: 8),
+                            child: Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                    color: const Color(0xFFE0E0E0)),
+                              ),
+                              child: const Row(
+                                children: [
+                                  ShimmerBone(
+                                      width: 28,
+                                      height: 28,
+                                      borderRadius: 14),
+                                  SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        ShimmerBone(
+                                            width: 120, height: 14),
+                                        SizedBox(height: 4),
+                                        ShimmerBone(
+                                            width: 80, height: 12),
+                                      ],
+                                    ),
+                                  ),
+                                  ShimmerBone(width: 60, height: 20),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                     error: (e, _) => Text(
                       'Keine weiteren Angebote verfügbar',
                       style: TextStyle(color: Colors.grey[500]),
@@ -155,7 +199,7 @@ class ProductDetailScreen extends ConsumerWidget {
                     child: ElevatedButton.icon(
                       onPressed: () => ref
                           .read(savedOffersProvider.notifier)
-                          .toggle(offer.id),
+                          .toggle(offer),
                       icon: Icon(
                         isSaved ? Icons.bookmark : Icons.bookmark_add,
                       ),
@@ -207,7 +251,7 @@ class _CurrentOfferCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [AppTheme.primaryGreen, AppTheme.lightGreen],
+          colors: [AppTheme.primaryGreen, AppTheme.primaryGreenLight],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

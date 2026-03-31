@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/app_providers.dart';
 import '../../../core/constants/supermarket_constants.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../domain/entities/offer.dart';
 import '../../widgets/offer_card.dart';
 import '../../widgets/ad_banner.dart';
+import '../../widgets/shimmer_loading.dart';
 import 'home_providers.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -72,6 +74,7 @@ class HomeScreen extends ConsumerWidget {
       );
       return;
     }
+    clearOffersCache();
     ref.read(zipCodeProvider.notifier).state = trimmed;
     final prefs = ref.read(sharedPreferencesProvider);
     prefs.setString('zipCode', trimmed);
@@ -105,11 +108,12 @@ class HomeScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'AngebotsFuchs 🦊',
+                  'AngebotsFuchs',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.5,
                   ),
                 ),
                 GestureDetector(
@@ -117,18 +121,20 @@ class HomeScreen extends ConsumerWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.location_on,
-                          color: Colors.white70, size: 14),
+                      Icon(Icons.location_on_rounded,
+                          color: Colors.white.withValues(alpha: 0.8), size: 13),
                       const SizedBox(width: 4),
                       Text(
                         'PLZ $zipCode',
-                        style: const TextStyle(
-                          color: Colors.white70,
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.8),
                           fontSize: 13,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                       const SizedBox(width: 4),
-                      const Icon(Icons.edit, color: Colors.white54, size: 12),
+                      Icon(Icons.edit_rounded,
+                          color: Colors.white.withValues(alpha: 0.6), size: 12),
                     ],
                   ),
                 ),
@@ -136,7 +142,8 @@ class HomeScreen extends ConsumerWidget {
             ),
             actions: [
               IconButton(
-                icon: const Icon(Icons.settings_outlined, color: Colors.white),
+                icon: Icon(Icons.settings_outlined,
+                    color: Colors.white.withValues(alpha: 0.9)),
                 onPressed: () =>
                     Navigator.of(context).pushNamed('/settings'),
               ),
@@ -174,7 +181,20 @@ class HomeScreen extends ConsumerWidget {
 
           // 이번 주 특가 헤더
           weeklyDeals.when(
-            loading: () => const SliverToBoxAdapter(child: SizedBox.shrink()),
+            loading: () => SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
+                child: ShimmerLoading(
+                  child: Row(
+                    children: const [
+                      ShimmerBone(width: 180, height: 18),
+                      Spacer(),
+                      ShimmerBone(width: 70, height: 13),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             error: (error, stack) => const SliverToBoxAdapter(child: SizedBox.shrink()),
             data: (deals) => SliverToBoxAdapter(
               child: Padding(
@@ -186,17 +206,27 @@ class HomeScreen extends ConsumerWidget {
                           ? '$selectedSupermarket Angebote'
                           : 'Diese Woche im Angebot',
                       style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
                         color: AppTheme.textPrimary,
+                        letterSpacing: -0.5,
                       ),
                     ),
                     const Spacer(),
-                    Text(
-                      '${deals.length} Produkte',
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: AppTheme.textSecondary,
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryGreen.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        '${deals.length} Produkte',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: AppTheme.primaryGreen,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ],
@@ -207,37 +237,107 @@ class HomeScreen extends ConsumerWidget {
 
           // 딜 그리드
           weeklyDeals.when(
-            loading: () => const SliverFillRemaining(
-              child: Center(child: CircularProgressIndicator()),
-            ),
+            loading: () => const HomeLoadingSkeleton(),
             error: (e, _) => SliverFillRemaining(
               child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.error_outline,
-                        size: 48, color: Colors.grey),
-                    const SizedBox(height: 12),
-                    Text('Fehler: $e'),
-                    const SizedBox(height: 12),
-                    ElevatedButton(
-                      onPressed: () =>
-                          ref.invalidate(weeklyDealsProvider),
-                      child: const Text('Erneut versuchen'),
-                    ),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          color: Colors.red[50],
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(Icons.wifi_off_rounded,
+                            size: 40, color: Colors.red[300]),
+                      ),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'Angebote konnten nicht geladen werden',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: AppTheme.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Prüfe deine Internetverbindung\nund versuche es erneut',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: AppTheme.textSecondary,
+                          fontSize: 14,
+                          height: 1.4,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          clearOffersCache();
+                          ref.invalidate(weeklyDealsProvider);
+                        },
+                        icon: const Icon(Icons.refresh),
+                        label: const Text('Erneut versuchen'),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
             data: (deals) {
               if (deals.isEmpty) {
-                return const SliverFillRemaining(
+                return SliverFillRemaining(
                   child: Center(
-                    child: Text('Keine Angebote gefunden'),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.local_offer_outlined,
+                            size: 72, color: Colors.grey[300]),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Keine Angebote gefunden',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: AppTheme.textPrimary,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          selectedCategory != null
+                              ? 'Versuche eine andere Kategorie oder ändere die PLZ'
+                              : 'Ändere deine PLZ oder versuche es später erneut',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            color: AppTheme.textSecondary,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        OutlinedButton.icon(
+                          onPressed: () => ref.invalidate(weeklyDealsProvider),
+                          icon: const Icon(Icons.refresh),
+                          label: const Text('Neu laden'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppTheme.primaryGreen,
+                            side: const BorderSide(color: AppTheme.primaryGreen),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               }
-              final savedOffers = ref.watch(savedOffersProvider);
+              final savedOfferIds = ref.watch(savedOfferIdsProvider);
 
               // 2열 카드 행 + 광고 행 혼합 리스트 구성
               // 카드 3행(6개)마다 광고 1개 삽입
@@ -248,15 +348,16 @@ class HomeScreen extends ConsumerWidget {
                 final right = i + 1 < deals.length ? deals[i + 1] : null;
 
                 rows.add(_CardRow(
+                  key: ValueKey(left.cheapest.id),
                   left: left,
                   right: right,
-                  savedOffers: savedOffers,
+                  savedOfferIds: savedOfferIds,
                   onTap: (offer) => Navigator.of(context).pushNamed(
                     '/product',
                     arguments: offer,
                   ),
-                  onSave: (id) =>
-                      ref.read(savedOffersProvider.notifier).toggle(id),
+                  onSave: (offer) =>
+                      ref.read(savedOffersProvider.notifier).toggle(offer),
                 ));
                 cardRowCount++;
 
@@ -314,15 +415,21 @@ class _CategoryFilter extends StatelessWidget {
             label: Text(cat),
             selected: isSelected,
             onSelected: (_) => onSelect(cat),
-            selectedColor: AppTheme.primaryGreen,
+            selectedColor: Colors.white,
             labelStyle: TextStyle(
-              color: isSelected ? Colors.white : AppTheme.textPrimary,
-              fontSize: 12,
-              fontWeight:
-                  isSelected ? FontWeight.w600 : FontWeight.normal,
+              color: isSelected ? AppTheme.primaryGreen : Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              letterSpacing: -0.1,
             ),
-            backgroundColor: Colors.white.withValues(alpha: 0.2),
+            backgroundColor: Colors.white.withValues(alpha: 0.15),
             showCheckmark: false,
+            side: BorderSide(
+              color: isSelected
+                  ? Colors.white
+                  : Colors.white.withValues(alpha: 0.3),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 4),
           );
         },
       ),
@@ -334,14 +441,15 @@ class _CategoryFilter extends StatelessWidget {
 class _CardRow extends StatelessWidget {
   final HomeOffer left;
   final HomeOffer? right;
-  final List<String> savedOffers;
-  final void Function(dynamic offer) onTap;
-  final void Function(String id) onSave;
+  final Set<String> savedOfferIds;
+  final void Function(Offer offer) onTap;
+  final void Function(Offer offer) onSave;
 
   const _CardRow({
+    super.key,
     required this.left,
     required this.right,
-    required this.savedOffers,
+    required this.savedOfferIds,
     required this.onTap,
     required this.onSave,
   });
@@ -362,9 +470,9 @@ class _CardRow extends StatelessWidget {
                 child: OfferCard(
                   offer: left.cheapest,
                   storeCount: left.storeCount,
-                  isSaved: savedOffers.contains(left.cheapest.id),
+                  isSaved: savedOfferIds.contains(left.cheapest.id),
                   onTap: () => onTap(left.cheapest),
-                  onSave: () => onSave(left.cheapest.id),
+                  onSave: () => onSave(left.cheapest),
                 ),
               ),
               const SizedBox(width: 8),
@@ -374,9 +482,9 @@ class _CardRow extends StatelessWidget {
                     ? OfferCard(
                         offer: right!.cheapest,
                         storeCount: right!.storeCount,
-                        isSaved: savedOffers.contains(right!.cheapest.id),
+                        isSaved: savedOfferIds.contains(right!.cheapest.id),
                         onTap: () => onTap(right!.cheapest),
-                        onSave: () => onSave(right!.cheapest.id),
+                        onSave: () => onSave(right!.cheapest),
                       )
                     : const SizedBox(),
               ),
@@ -424,15 +532,21 @@ class _SupermarketFilter extends StatelessWidget {
             ),
             selected: isSelected,
             onSelected: (_) => onSelect(market),
-            selectedColor: selectedColor,
+            selectedColor: Colors.white,
             labelStyle: TextStyle(
-              color: isSelected ? Colors.white : AppTheme.textPrimary,
-              fontSize: 12,
-              fontWeight:
-                  isSelected ? FontWeight.w600 : FontWeight.normal,
+              color: isSelected ? selectedColor : Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              letterSpacing: -0.1,
             ),
             backgroundColor: Colors.white.withValues(alpha: 0.15),
             showCheckmark: false,
+            side: BorderSide(
+              color: isSelected
+                  ? Colors.white
+                  : Colors.white.withValues(alpha: 0.3),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 4),
           );
         },
       ),

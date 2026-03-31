@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/price_formatter.dart';
 import '../../widgets/price_comparison_row.dart';
+import '../../widgets/shimmer_loading.dart';
 import 'search_providers.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
@@ -22,6 +23,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    // Rebuild when text changes so clear button appears/disappears reactively
+    _controller.addListener(() => setState(() {}));
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     _focusNode.dispose();
@@ -29,9 +37,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   void _search(String query) {
-    if (query.trim().isEmpty) return;
     ref.read(searchQueryProvider.notifier).state = query.trim();
-    _focusNode.unfocus();
+    if (query.trim().isNotEmpty) _focusNode.unfocus();
   }
 
   @override
@@ -53,6 +60,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             child: TextField(
               controller: _controller,
               focusNode: _focusNode,
+              onChanged: (value) {
+                ref.read(searchQueryProvider.notifier).state = value.trim();
+              },
               onSubmitted: _search,
               decoration: InputDecoration(
                 hintText: 'Produkt suchen (z.B. Milch, Brot...)',
@@ -81,18 +91,55 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             child: query.isEmpty
                 ? _buildSuggestions()
                 : results.when(
-                    loading: () => const Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                    loading: () => const SearchLoadingSkeleton(),
                     error: (e, _) => Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.error_outline,
-                              size: 48, color: Colors.grey),
-                          const SizedBox(height: 12),
-                          Text('Fehler beim Suchen: $e'),
-                        ],
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 72,
+                              height: 72,
+                              decoration: BoxDecoration(
+                                color: Colors.orange[50],
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(Icons.search_off_rounded,
+                                  size: 36, color: Colors.orange[400]),
+                            ),
+                            const SizedBox(height: 16),
+                            const Text(
+                              'Suche fehlgeschlagen',
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.textPrimary,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Prüfe deine Internetverbindung\nund versuche es erneut',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: AppTheme.textSecondary,
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            OutlinedButton.icon(
+                              onPressed: () =>
+                                  ref.invalidate(searchResultsProvider),
+                              icon: const Icon(Icons.refresh),
+                              label: const Text('Erneut suchen'),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: AppTheme.primaryGreen,
+                                side: const BorderSide(
+                                    color: AppTheme.primaryGreen),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     data: (offers) => offers.isEmpty
@@ -208,7 +255,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             margin: const EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [AppTheme.primaryGreen, AppTheme.lightGreen],
+                colors: [AppTheme.primaryGreen, AppTheme.primaryGreenLight],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),

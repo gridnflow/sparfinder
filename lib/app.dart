@@ -21,7 +21,8 @@ class SparFinderApp extends StatelessWidget {
       onGenerateRoute: (settings) {
         switch (settings.name) {
           case '/product':
-            final offer = settings.arguments as Offer;
+            final offer = settings.arguments;
+            if (offer is! Offer) return null;
             return MaterialPageRoute(
               builder: (_) => ProductDetailScreen(offer: offer),
             );
@@ -60,28 +61,34 @@ class _MainShellState extends ConsumerState<_MainShell> {
         index: _selectedIndex,
         children: _pages,
       ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: (i) => setState(() => _selectedIndex = i),
-        backgroundColor: Colors.white,
-        indicatorColor: AppTheme.primaryGreen.withValues(alpha: 0.15),
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home, color: AppTheme.primaryGreen),
-            label: 'Angebote',
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: AppTheme.surfaceWhite,
+          border: const Border(
+            top: BorderSide(color: AppTheme.divider, width: 0.5),
           ),
-          NavigationDestination(
-            icon: Icon(Icons.search_outlined),
-            selectedIcon: Icon(Icons.search, color: AppTheme.primaryGreen),
-            label: 'Vergleich',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.bookmark_border),
-            selectedIcon: Icon(Icons.bookmark, color: AppTheme.primaryGreen),
-            label: 'Merkliste',
-          ),
-        ],
+        ),
+        child: NavigationBar(
+          selectedIndex: _selectedIndex,
+          onDestinationSelected: (i) => setState(() => _selectedIndex = i),
+          destinations: const [
+            NavigationDestination(
+              icon: Icon(Icons.local_offer_outlined),
+              selectedIcon: Icon(Icons.local_offer_rounded, color: AppTheme.primaryGreen),
+              label: 'Angebote',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.search_outlined),
+              selectedIcon: Icon(Icons.search_rounded, color: AppTheme.primaryGreen),
+              label: 'Vergleich',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.bookmark_border_rounded),
+              selectedIcon: Icon(Icons.bookmark_rounded, color: AppTheme.primaryGreen),
+              label: 'Merkliste',
+            ),
+          ],
+        ),
       ),
     );
   }

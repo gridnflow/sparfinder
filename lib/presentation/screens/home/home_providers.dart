@@ -21,17 +21,57 @@ final selectedCategoryProvider = StateProvider<String?>((ref) => null);
 // 선택된 슈퍼마켓 필터
 final selectedSupermarketProvider = StateProvider<String?>((ref) => null);
 
+/// In-memory cache for raw offers to avoid re-fetching 35 parallel API calls
+class _OffersCache {
+  List<Offer>? data;
+  String? zipCode;
+  String? category;
+  DateTime? fetchedAt;
+
+  bool isValid(String zip, String? cat) {
+    if (data == null || fetchedAt == null) return false;
+    if (zipCode != zip || category != cat) return false;
+    // Cache valid for 10 minutes
+    return DateTime.now().difference(fetchedAt!).inMinutes < 10;
+  }
+}
+
+final _offersCache = _OffersCache();
+
+/// Clear the offers cache (e.g. on retry or zip code change)
+void clearOffersCache() {
+  _offersCache
+    ..data = null
+    ..fetchedAt = null;
+}
+
 // 원시 Offer 목록 — API 호출은 여기서만, 슈퍼마켓 필터는 적용하지 않음
-final _rawOffersProvider = FutureProvider.autoDispose<List<Offer>>((ref) async {
+// keepAlive: don't dispose on tab switch (IndexedStack already preserves state)
+final _rawOffersProvider = FutureProvider<List<Offer>>((ref) async {
   final zipCode = ref.watch(zipCodeProvider);
   final category = ref.watch(selectedCategoryProvider);
+
+  // Return cached data if still valid
+  if (_offersCache.isValid(zipCode, category)) {
+    return _offersCache.data!;
+  }
+
   final useCase = ref.watch(getWeeklyDealsUseCaseProvider);
-  return useCase(zipCode: zipCode, category: category);
+  final offers = await useCase(zipCode: zipCode, category: category);
+
+  // Update cache
+  _offersCache
+    ..data = offers
+    ..zipCode = zipCode
+    ..category = category
+    ..fetchedAt = DateTime.now();
+
+  return offers;
 });
 
 // 실제 데이터에서 동적으로 슈퍼마켓 목록 생성 (제품 수 많은 순)
 final availableSupermarketsProvider =
-    FutureProvider.autoDispose<List<String>>((ref) async {
+    FutureProvider<List<String>>((ref) async {
   final offers = await ref.watch(_rawOffersProvider.future);
 
   final counts = <String, int>{};
@@ -47,7 +87,7 @@ final availableSupermarketsProvider =
 
 // 홈 화면 주간 세일 데이터 (슈퍼마켓 필터 + 중복 제거)
 final weeklyDealsProvider =
-    FutureProvider.autoDispose<List<HomeOffer>>((ref) async {
+    FutureProvider<List<HomeOffer>>((ref) async {
   final supermarket = ref.watch(selectedSupermarketProvider);
   final allOffers = await ref.watch(_rawOffersProvider.future);
 
