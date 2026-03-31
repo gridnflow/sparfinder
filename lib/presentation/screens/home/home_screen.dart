@@ -451,19 +451,20 @@ class _SupermarketFilter extends StatelessWidget {
             label: Text(
               info != null ? '${info.emoji} $market' : market,
               style: TextStyle(
-                color: isSelected ? selectedColor : Colors.white,
+                color: isSelected ? selectedColor : AppTheme.textSecondary,
                 fontSize: 13,
-                fontWeight: FontWeight.w600,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
                 letterSpacing: -0.1,
               ),
             ),
             selected: isSelected,
             onSelected: (_) => onSelect(market),
             selectedColor: Colors.white,
-            backgroundColor: Colors.white.withValues(alpha: 0.25),
+            backgroundColor: Colors.white,
             showCheckmark: false,
             side: BorderSide(
-              color: isSelected ? Colors.white : Colors.white.withValues(alpha: 0.6),
+              color: isSelected ? selectedColor : Colors.transparent,
+              width: isSelected ? 1.5 : 0,
             ),
             padding: const EdgeInsets.symmetric(horizontal: 4),
           );
