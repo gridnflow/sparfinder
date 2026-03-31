@@ -71,7 +71,13 @@ class SupermarketConstants {
 
   static SupermarketInfo getInfo(String name) {
     final key = name.toLowerCase().replaceAll(' ', '');
-    return supermarkets[key] ??
+    if (supermarkets.containsKey(key)) return supermarkets[key]!;
+    // 변형 이름 처리 (예: "ALDI Nord Markt", "REWE City" 등)
+    final match = supermarkets.keys.firstWhere(
+      (k) => key.contains(k),
+      orElse: () => '',
+    );
+    return supermarkets[match] ??
         SupermarketInfo(
           id: key,
           name: name,

@@ -16,7 +16,7 @@ class SavedScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Einkaufsliste'),
-        backgroundColor: AppTheme.primaryGreen,
+        backgroundColor: AppTheme.accentOrange,
         actions: [
           if (savedOffers.isNotEmpty)
             TextButton(
@@ -93,18 +93,18 @@ class SavedScreen extends ConsumerWidget {
                                   imageUrl: offer.imageUrl!,
                                   fit: BoxFit.cover,
                                   errorWidget: (_, _, _) => Container(
-                                    color: AppTheme.primaryGreen
+                                    color: AppTheme.accentOrange
                                         .withValues(alpha: 0.1),
                                     child: const Icon(Icons.shopping_basket,
-                                        color: AppTheme.primaryGreen,
+                                        color: AppTheme.accentOrange,
                                         size: 24),
                                   ),
                                 )
                               : Container(
-                                  color: AppTheme.primaryGreen
+                                  color: AppTheme.accentOrange
                                       .withValues(alpha: 0.1),
                                   child: const Icon(Icons.shopping_basket,
-                                      color: AppTheme.primaryGreen, size: 24),
+                                      color: AppTheme.accentOrange, size: 24),
                                 ),
                         ),
                       ),
@@ -151,11 +151,11 @@ class SavedScreen extends ConsumerWidget {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: AppTheme.primaryGreen.withValues(alpha: 0.08),
+                color: AppTheme.accentOrange.withValues(alpha: 0.08),
                 shape: BoxShape.circle,
               ),
               child: Icon(Icons.bookmark_border,
-                  size: 48, color: AppTheme.primaryGreen.withValues(alpha: 0.5)),
+                  size: 48, color: AppTheme.accentOrange.withValues(alpha: 0.5)),
             ),
             const SizedBox(height: 24),
             const Text(
@@ -187,7 +187,7 @@ class SavedScreen extends ConsumerWidget {
                     size: 14, color: AppTheme.textSecondary),
                 const SizedBox(width: 6),
                 Icon(Icons.bookmark,
-                    size: 18, color: AppTheme.primaryGreen),
+                    size: 18, color: AppTheme.accentOrange),
               ],
             ),
           ],

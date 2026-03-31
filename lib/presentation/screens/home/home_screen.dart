@@ -81,7 +81,7 @@ class HomeScreen extends ConsumerWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Angebote für PLZ $trimmed werden geladen...'),
-        backgroundColor: AppTheme.primaryGreen,
+        backgroundColor: AppTheme.accentOrange,
         duration: const Duration(seconds: 2),
       ),
     );
@@ -103,7 +103,7 @@ class HomeScreen extends ConsumerWidget {
           SliverAppBar(
             floating: true,
             snap: true,
-            backgroundColor: AppTheme.primaryGreen,
+            backgroundColor: AppTheme.accentOrange,
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -217,14 +217,14 @@ class HomeScreen extends ConsumerWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: AppTheme.primaryGreen.withValues(alpha: 0.08),
+                        color: AppTheme.accentOrange.withValues(alpha: 0.08),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
                         '${deals.length} Produkte',
                         style: const TextStyle(
                           fontSize: 12,
-                          color: AppTheme.primaryGreen,
+                          color: AppTheme.accentOrange,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -328,8 +328,8 @@ class HomeScreen extends ConsumerWidget {
                           icon: const Icon(Icons.refresh),
                           label: const Text('Neu laden'),
                           style: OutlinedButton.styleFrom(
-                            foregroundColor: AppTheme.primaryGreen,
-                            side: const BorderSide(color: AppTheme.primaryGreen),
+                            foregroundColor: AppTheme.accentOrange,
+                            side: const BorderSide(color: AppTheme.accentOrange),
                           ),
                         ),
                       ],
@@ -412,22 +412,22 @@ class _CategoryFilter extends StatelessWidget {
           final cat = categories[index];
           final isSelected = cat == selected;
           return FilterChip(
-            label: Text(cat),
+            label: Text(
+              cat,
+              style: TextStyle(
+                color: isSelected ? AppTheme.accentOrange : Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                letterSpacing: -0.1,
+              ),
+            ),
             selected: isSelected,
             onSelected: (_) => onSelect(cat),
             selectedColor: Colors.white,
-            labelStyle: TextStyle(
-              color: isSelected ? AppTheme.primaryGreen : Colors.white,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              letterSpacing: -0.1,
-            ),
-            backgroundColor: Colors.white.withValues(alpha: 0.15),
+            backgroundColor: Colors.white.withValues(alpha: 0.25),
             showCheckmark: false,
             side: BorderSide(
-              color: isSelected
-                  ? Colors.white
-                  : Colors.white.withValues(alpha: 0.3),
+              color: isSelected ? Colors.white : Colors.white.withValues(alpha: 0.6),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 4),
           );
@@ -524,27 +524,25 @@ class _SupermarketFilter extends StatelessWidget {
               : SupermarketConstants.getInfo(market);
           final selectedColor = info != null
               ? Color(info.color)
-              : AppTheme.primaryGreen;
+              : AppTheme.accentOrange;
 
           return FilterChip(
             label: Text(
               info != null ? '${info.emoji} $market' : market,
+              style: TextStyle(
+                color: isSelected ? selectedColor : Colors.white,
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                letterSpacing: -0.1,
+              ),
             ),
             selected: isSelected,
             onSelected: (_) => onSelect(market),
             selectedColor: Colors.white,
-            labelStyle: TextStyle(
-              color: isSelected ? selectedColor : Colors.white,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              letterSpacing: -0.1,
-            ),
-            backgroundColor: Colors.white.withValues(alpha: 0.15),
+            backgroundColor: Colors.white.withValues(alpha: 0.25),
             showCheckmark: false,
             side: BorderSide(
-              color: isSelected
-                  ? Colors.white
-                  : Colors.white.withValues(alpha: 0.3),
+              color: isSelected ? Colors.white : Colors.white.withValues(alpha: 0.6),
             ),
             padding: const EdgeInsets.symmetric(horizontal: 4),
           );

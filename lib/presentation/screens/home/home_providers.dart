@@ -109,7 +109,8 @@ List<HomeOffer> _deduplicateCheapest(List<Offer> offers) {
 
   final Map<String, List<Offer>> groups = {};
   for (final offer in offers) {
-    final key = normalize(offer.productName);
+    // brand + productName 조합으로 그룹화 (productName만 사용 시 다른 브랜드가 같은 그룹이 되는 문제 방지)
+    final key = normalize(offer.displayName);
     groups.putIfAbsent(key, () => []).add(offer);
   }
 

@@ -204,7 +204,7 @@ class OfferCard extends StatelessWidget {
                                   fontSize: 17,
                                   fontWeight: FontWeight.w800,
                                   color: isCheapest
-                                      ? AppTheme.primaryGreen
+                                      ? AppTheme.accentOrange
                                       : AppTheme.textPrimary,
                                   letterSpacing: -0.3,
                                 ),
@@ -234,7 +234,7 @@ class OfferCard extends StatelessWidget {
                                 height: 32,
                                 decoration: BoxDecoration(
                                   color: isSaved
-                                      ? AppTheme.primaryGreen
+                                      ? AppTheme.accentOrange
                                           .withValues(alpha: 0.1)
                                       : AppTheme.background,
                                   borderRadius: BorderRadius.circular(8),
@@ -244,7 +244,7 @@ class OfferCard extends StatelessWidget {
                                       ? Icons.bookmark_rounded
                                       : Icons.bookmark_border_rounded,
                                   color: isSaved
-                                      ? AppTheme.primaryGreen
+                                      ? AppTheme.accentOrange
                                       : AppTheme.textTertiary,
                                   size: 18,
                                 ),

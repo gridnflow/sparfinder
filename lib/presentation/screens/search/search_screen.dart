@@ -49,13 +49,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Preisvergleich'),
-        backgroundColor: AppTheme.primaryGreen,
+        backgroundColor: AppTheme.accentOrange,
       ),
       body: Column(
         children: [
           // 검색바
           Container(
-            color: AppTheme.primaryGreen,
+            color: AppTheme.accentOrange,
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: TextField(
               controller: _controller,
@@ -133,9 +133,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                               icon: const Icon(Icons.refresh),
                               label: const Text('Erneut suchen'),
                               style: OutlinedButton.styleFrom(
-                                foregroundColor: AppTheme.primaryGreen,
+                                foregroundColor: AppTheme.accentOrange,
                                 side: const BorderSide(
-                                    color: AppTheme.primaryGreen),
+                                    color: AppTheme.accentOrange),
                               ),
                             ),
                           ],
@@ -255,7 +255,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             margin: const EdgeInsets.only(bottom: 16),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [AppTheme.primaryGreen, AppTheme.primaryGreenLight],
+                colors: [AppTheme.accentOrange, AppTheme.accentOrangeLight],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),

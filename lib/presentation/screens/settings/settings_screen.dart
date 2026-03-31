@@ -54,7 +54,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('PLZ $zip gespeichert'),
-        backgroundColor: AppTheme.primaryGreen,
+        backgroundColor: AppTheme.accentOrange,
       ),
     );
   }
@@ -66,7 +66,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Einstellungen'),
-        backgroundColor: AppTheme.primaryGreen,
+        backgroundColor: AppTheme.accentOrange,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -151,7 +151,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   subtitle: Text('PLZ ${entry.value}'),
                   trailing: isSelected
                       ? const Icon(Icons.check_circle,
-                          color: AppTheme.primaryGreen)
+                          color: AppTheme.accentOrange)
                       : null,
                   onTap: () {
                     _zipController.text = entry.value;
@@ -180,7 +180,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               children: [
                 ListTile(
                   leading: const Icon(Icons.privacy_tip_outlined,
-                      color: AppTheme.primaryGreen),
+                      color: AppTheme.accentOrange),
                   title: const Text('Datenschutzerklärung'),
                   trailing: const Icon(Icons.open_in_new, size: 16),
                   onTap: () => launchUrl(
@@ -191,7 +191,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 const Divider(height: 1),
                 ListTile(
                   leading: const Icon(Icons.article_outlined,
-                      color: AppTheme.primaryGreen),
+                      color: AppTheme.accentOrange),
                   title: const Text('Nutzungsbedingungen'),
                   trailing: const Icon(Icons.open_in_new, size: 16),
                   onTap: () => launchUrl(

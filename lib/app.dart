@@ -74,17 +74,17 @@ class _MainShellState extends ConsumerState<_MainShell> {
           destinations: const [
             NavigationDestination(
               icon: Icon(Icons.local_offer_outlined),
-              selectedIcon: Icon(Icons.local_offer_rounded, color: AppTheme.primaryGreen),
+              selectedIcon: Icon(Icons.local_offer_rounded, color: AppTheme.accentOrange),
               label: 'Angebote',
             ),
             NavigationDestination(
               icon: Icon(Icons.search_outlined),
-              selectedIcon: Icon(Icons.search_rounded, color: AppTheme.primaryGreen),
+              selectedIcon: Icon(Icons.search_rounded, color: AppTheme.accentOrange),
               label: 'Vergleich',
             ),
             NavigationDestination(
               icon: Icon(Icons.bookmark_border_rounded),
-              selectedIcon: Icon(Icons.bookmark_rounded, color: AppTheme.primaryGreen),
+              selectedIcon: Icon(Icons.bookmark_rounded, color: AppTheme.accentOrange),
               label: 'Merkliste',
             ),
           ],

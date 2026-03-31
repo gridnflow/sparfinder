@@ -33,13 +33,13 @@ class AppTheme {
 
   // ── Gradients ──
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [primaryGreen, primaryGreenLight],
+    colors: [accentOrange, accentOrangeLight],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient savingsGradient = LinearGradient(
-    colors: [Color(0xFF1B8B4B), Color(0xFF34C759)],
+    colors: [Color(0xFFE8742A), Color(0xFFF5A623)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
@@ -83,16 +83,16 @@ class AppTheme {
       useMaterial3: true,
       fontFamily: 'SF Pro Display',
       colorScheme: ColorScheme.fromSeed(
-        seedColor: primaryGreen,
+        seedColor: accentOrange,
         brightness: Brightness.light,
-        primary: primaryGreen,
-        secondary: accentOrange,
+        primary: accentOrange,
+        secondary: accentOrangeLight,
         surface: background,
         error: errorRed,
       ),
       scaffoldBackgroundColor: background,
       appBarTheme: AppBarTheme(
-        backgroundColor: primaryGreen,
+        backgroundColor: accentOrange,
         foregroundColor: textOnPrimary,
         elevation: 0,
         centerTitle: false,
@@ -116,7 +116,7 @@ class AppTheme {
       ),
       chipTheme: ChipThemeData(
         backgroundColor: const Color(0xFFF0F1F3),
-        selectedColor: primaryGreen,
+        selectedColor: accentOrange,
         labelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         shape: RoundedRectangleBorder(
@@ -137,7 +137,7 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: primaryGreen, width: 1.5),
+          borderSide: const BorderSide(color: accentOrange, width: 1.5),
         ),
         hintStyle: const TextStyle(color: textTertiary, fontSize: 15),
         contentPadding:
@@ -145,7 +145,7 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: primaryGreen,
+          backgroundColor: accentOrange,
           foregroundColor: textOnPrimary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
@@ -161,8 +161,8 @@ class AppTheme {
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: primaryGreen,
-          side: const BorderSide(color: primaryGreen, width: 1.5),
+          foregroundColor: accentOrange,
+          side: const BorderSide(color: accentOrange, width: 1.5),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
@@ -176,7 +176,7 @@ class AppTheme {
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: primaryGreen,
+          foregroundColor: accentOrange,
           textStyle: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w600,
@@ -187,13 +187,13 @@ class AppTheme {
         elevation: 0,
         backgroundColor: surfaceWhite,
         surfaceTintColor: Colors.transparent,
-        indicatorColor: primaryGreen.withValues(alpha: 0.12),
+        indicatorColor: accentOrange.withValues(alpha: 0.12),
         labelTextStyle: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
             return const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: primaryGreen,
+              color: accentOrange,
               letterSpacing: -0.1,
             );
           }
@@ -205,7 +205,7 @@ class AppTheme {
         }),
         iconTheme: WidgetStateProperty.resolveWith((states) {
           if (states.contains(WidgetState.selected)) {
-            return const IconThemeData(color: primaryGreen, size: 24);
+            return const IconThemeData(color: accentOrange, size: 24);
           }
           return const IconThemeData(color: textTertiary, size: 24);
         }),

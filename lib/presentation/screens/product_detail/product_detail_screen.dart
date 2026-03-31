@@ -31,7 +31,7 @@ class ProductDetailScreen extends ConsumerWidget {
           SliverAppBar(
             expandedHeight: 220,
             pinned: true,
-            backgroundColor: AppTheme.primaryGreen,
+            backgroundColor: AppTheme.accentOrange,
             flexibleSpace: FlexibleSpaceBar(
               background: Hero(
                 tag: 'offer_image_${offer.id}',
@@ -212,7 +212,7 @@ class ProductDetailScreen extends ConsumerWidget {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         backgroundColor: isSaved
                             ? Colors.grey[200]
-                            : AppTheme.primaryGreen,
+                            : AppTheme.accentOrange,
                         foregroundColor:
                             isSaved ? AppTheme.textPrimary : Colors.white,
                       ),
@@ -251,7 +251,7 @@ class _CurrentOfferCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [AppTheme.primaryGreen, AppTheme.primaryGreenLight],
+          colors: [AppTheme.accentOrange, AppTheme.accentOrangeLight],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

@@ -25,11 +25,11 @@ class PriceComparisonRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
         color: isCheapest
-            ? AppTheme.primaryGreen.withValues(alpha: 0.06)
+            ? AppTheme.accentOrange.withValues(alpha: 0.06)
             : AppTheme.cardBackground,
         borderRadius: BorderRadius.circular(14),
         border: isCheapest
-            ? Border.all(color: AppTheme.primaryGreen.withValues(alpha: 0.4), width: 1.5)
+            ? Border.all(color: AppTheme.accentOrange.withValues(alpha: 0.4), width: 1.5)
             : Border.all(color: AppTheme.divider),
         boxShadow: isCheapest ? AppTheme.cardShadow : null,
       ),
@@ -41,7 +41,7 @@ class PriceComparisonRow extends StatelessWidget {
             width: 30,
             height: 30,
             decoration: BoxDecoration(
-              gradient: isCheapest ? AppTheme.primaryGradient : null,
+              gradient: isCheapest ? AppTheme.dealGradient : null,
               color: isCheapest ? null : const Color(0xFFF0F1F3),
               shape: BoxShape.circle,
             ),
@@ -76,7 +76,7 @@ class PriceComparisonRow extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
                           color: isCheapest
-                              ? AppTheme.primaryGreen
+                              ? AppTheme.accentOrange
                               : Color(info.color),
                           letterSpacing: -0.2,
                         ),
@@ -136,7 +136,7 @@ class PriceComparisonRow extends StatelessWidget {
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
                   color: isCheapest
-                      ? AppTheme.primaryGreen
+                      ? AppTheme.accentOrange
                       : AppTheme.textPrimary,
                   letterSpacing: -0.3,
                 ),
