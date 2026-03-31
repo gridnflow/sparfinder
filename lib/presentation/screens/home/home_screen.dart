@@ -12,19 +12,6 @@ import 'home_providers.dart';
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
-  static const _categories = [
-    'Alle',
-    'Milchprodukte',
-    'Fleisch',
-    'Obst & Gemüse',
-    'Getränke',
-    'Brot & Backwaren',
-    'Fisch',
-    'Eier',
-    'Käse',
-    'Frühstück',
-  ];
-
   void _showZipDialog(BuildContext context, WidgetRef ref, String currentZip) {
     final controller = TextEditingController(text: currentZip);
     showDialog(
@@ -90,7 +77,6 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final zipCode = ref.watch(zipCodeProvider);
-    final selectedCategory = ref.watch(selectedCategoryProvider);
     final selectedSupermarket = ref.watch(selectedSupermarketProvider);
     final weeklyDeals = ref.watch(weeklyDealsProvider);
 
@@ -149,32 +135,18 @@ class HomeScreen extends ConsumerWidget {
               ),
             ],
             bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(120),
-              child: Column(
-                children: [
-                  // 상품 카테고리 필터
-                  _CategoryFilter(
-                    categories: _categories,
-                    selected: selectedCategory ?? 'Alle',
-                    onSelect: (cat) {
-                      ref.read(selectedCategoryProvider.notifier).state =
-                          cat == 'Alle' ? null : cat;
-                    },
-                  ),
-                  // 슈퍼마켓 필터 (실제 데이터 기반 동적 목록)
-                  ref.watch(availableSupermarketsProvider).when(
-                    loading: () => const SizedBox(height: 46),
-                    error: (e, s) => const SizedBox(height: 46),
-                    data: (markets) => _SupermarketFilter(
-                      supermarkets: markets,
-                      selected: selectedSupermarket ?? 'Alle',
-                      onSelect: (market) {
-                        ref.read(selectedSupermarketProvider.notifier).state =
-                            market == 'Alle' ? null : market;
-                      },
-                    ),
-                  ),
-                ],
+              preferredSize: const Size.fromHeight(60),
+              child: ref.watch(availableSupermarketsProvider).when(
+                loading: () => const SizedBox(height: 46),
+                error: (e, s) => const SizedBox(height: 46),
+                data: (markets) => _SupermarketFilter(
+                  supermarkets: markets,
+                  selected: selectedSupermarket ?? 'Alle',
+                  onSelect: (market) {
+                    ref.read(selectedSupermarketProvider.notifier).state =
+                        market == 'Alle' ? null : market;
+                  },
+                ),
               ),
             ),
           ),
@@ -313,9 +285,7 @@ class HomeScreen extends ConsumerWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          selectedCategory != null
-                              ? 'Versuche eine andere Kategorie oder ändere die PLZ'
-                              : 'Ändere deine PLZ oder versuche es später erneut',
+                          'Ändere deine PLZ oder versuche es später erneut',
                           textAlign: TextAlign.center,
                           style: const TextStyle(
                             color: AppTheme.textSecondary,
@@ -383,55 +353,6 @@ class HomeScreen extends ConsumerWidget {
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 80)),
         ],
-      ),
-    );
-  }
-}
-
-class _CategoryFilter extends StatelessWidget {
-  final List<String> categories;
-  final String selected;
-  final ValueChanged<String> onSelect;
-
-  const _CategoryFilter({
-    required this.categories,
-    required this.selected,
-    required this.onSelect,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 46,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        itemCount: categories.length,
-        separatorBuilder: (context, index) => const SizedBox(width: 8),
-        itemBuilder: (context, index) {
-          final cat = categories[index];
-          final isSelected = cat == selected;
-          return FilterChip(
-            label: Text(
-              cat,
-              style: TextStyle(
-                color: isSelected ? AppTheme.accentOrange : Colors.white,
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                letterSpacing: -0.1,
-              ),
-            ),
-            selected: isSelected,
-            onSelected: (_) => onSelect(cat),
-            selectedColor: Colors.white,
-            backgroundColor: Colors.white.withValues(alpha: 0.25),
-            showCheckmark: false,
-            side: BorderSide(
-              color: isSelected ? Colors.white : Colors.white.withValues(alpha: 0.6),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-          );
-        },
       ),
     );
   }
