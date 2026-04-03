@@ -1,4 +1,4 @@
-package cam.gridnflow.angebotsfuchs
+package com.gridnflow.angebotsfuchs
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -14,7 +14,7 @@ if (keyPropertiesFile.exists()) {
 }
 
 android {
-    namespace = "cam.gridnflow.angebotsfuchs"
+    namespace = "com.gridnflow.angebotsfuchs"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -28,7 +28,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "cam.gridnflow.angebotsfuchs"
+        applicationId = "com.gridnflow.angebotsfuchs"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
