@@ -106,10 +106,17 @@ class ProductDetailScreen extends ConsumerWidget {
 
                   const SizedBox(height: 24),
 
-                  // 유효기간
+                  // 유효기간 (placeholder 날짜 60일 초과 시 숨김)
                   if (offer.validFrom != null || offer.validUntil != null)
-                    _ValidityBar(
-                        from: offer.validFrom, until: offer.validUntil),
+                    Builder(builder: (context) {
+                      final from = offer.validFrom;
+                      final until = offer.validUntil;
+                      if (from != null && until != null &&
+                          until.difference(from).inDays > 60) {
+                        return const SizedBox.shrink();
+                      }
+                      return _ValidityBar(from: from, until: until);
+                    }),
 
                   const SizedBox(height: 24),
 
