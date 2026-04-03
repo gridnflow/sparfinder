@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/price_formatter.dart';
+import '../../widgets/ad_banner.dart';
 import '../../widgets/price_comparison_row.dart';
 import '../../widgets/shimmer_loading.dart';
 import 'search_providers.dart';
@@ -50,6 +51,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       appBar: AppBar(
         title: const Text('Preisvergleich'),
         backgroundColor: AppTheme.accentOrange,
+      ),
+      bottomNavigationBar: const AdBannerWidget(
+        adUnitId: AdBannerWidget.searchBannerId,
       ),
       body: Column(
         children: [

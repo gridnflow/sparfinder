@@ -9,6 +9,8 @@ class AdBannerWidget extends StatefulWidget {
 
   static const String bottomBannerId = 'ca-app-pub-6139362725426823/5690077113';
   static const String feedBannerId = 'ca-app-pub-6139362725426823/3290785697';
+  static const String searchBannerId = 'ca-app-pub-6139362725426823/3290785697';
+  static const String detailBannerId = 'ca-app-pub-6139362725426823/3290785697';
 
   const AdBannerWidget({
     super.key,

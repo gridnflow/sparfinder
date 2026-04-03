@@ -6,6 +6,7 @@ import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/price_formatter.dart';
 import '../../../core/constants/supermarket_constants.dart';
+import '../../widgets/ad_banner.dart';
 import '../../widgets/price_comparison_row.dart';
 import '../../widgets/shimmer_loading.dart';
 import '../search/search_providers.dart';
@@ -193,6 +194,13 @@ class ProductDetailScreen extends ConsumerWidget {
                   ),
 
                   const SizedBox(height: 24),
+
+                  // 광고 배너
+                  const AdBannerWidget(
+                    adUnitId: AdBannerWidget.detailBannerId,
+                  ),
+
+                  const SizedBox(height: 16),
 
                   // 저장 버튼
                   SizedBox(

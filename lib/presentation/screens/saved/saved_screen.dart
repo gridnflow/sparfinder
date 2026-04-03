@@ -5,6 +5,7 @@ import '../../../core/providers/app_providers.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/utils/price_formatter.dart';
 import '../../../core/constants/supermarket_constants.dart';
+import '../../widgets/ad_banner.dart';
 
 class SavedScreen extends ConsumerWidget {
   const SavedScreen({super.key});
@@ -14,6 +15,9 @@ class SavedScreen extends ConsumerWidget {
     final savedOffers = ref.watch(savedOffersProvider);
 
     return Scaffold(
+      bottomNavigationBar: const AdBannerWidget(
+        adUnitId: AdBannerWidget.bottomBannerId,
+      ),
       appBar: AppBar(
         title: const Text('Einkaufsliste'),
         backgroundColor: AppTheme.accentOrange,
