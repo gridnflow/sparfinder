@@ -83,7 +83,8 @@ class OfferModel {
     }
 
     final offerId = json['id']?.toString() ?? DateTime.now().millisecondsSinceEpoch.toString();
-    // CDN 패턴: https://mg2de.b-cdn.net/api/v1/offers/{id}/images/default/0/medium.webp
+
+    // 이미지 URL: CDN 패턴으로 생성 (API의 images 필드는 Map이라 URL 없음)
     final imageUrl = 'https://mg2de.b-cdn.net/api/v1/offers/$offerId/images/default/0/medium.webp';
 
     return OfferModel(

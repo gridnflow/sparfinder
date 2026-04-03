@@ -35,7 +35,6 @@ class MarktguruRemoteSource {
 
     final seen = <String>{};
     final all = <OfferModel>[];
-    int successCount = 0;
 
     // 5개씩 배치 처리, 개별 키워드 실패는 건너뜀
     for (int i = 0; i < keywords.length; i += _batchSize) {
@@ -58,7 +57,6 @@ class MarktguruRemoteSource {
       final results = await Future.wait(futures);
 
       for (final list in results) {
-        if (list.isNotEmpty) successCount++;
         for (final offer in list) {
           if (seen.add(offer.id)) all.add(offer);
         }
@@ -69,9 +67,6 @@ class MarktguruRemoteSource {
         await Future.delayed(const Duration(milliseconds: 300));
       }
     }
-
-    // 모든 키워드가 실패한 경우에만 목업 데이터 반환
-    if (successCount == 0) return OfferModel.generateWeeklyMockDeals();
 
     return all;
   }
@@ -84,7 +79,7 @@ class MarktguruRemoteSource {
     try {
       return await _fetchAllPages(query: query, zipCode: zipCode);
     } on DioException catch (e) {
-      if (_isFallbackError(e)) return OfferModel.generateMockData(query);
+      if (_isFallbackError(e)) return [];
       rethrow;
     }
   }
@@ -142,7 +137,8 @@ class MarktguruRemoteSource {
     );
 
     final data = response.data as Map<String, dynamic>?;
-    final results = data?['results'] as List<dynamic>? ?? [];
+    final raw = data?['results'];
+    final results = raw is List ? raw : <dynamic>[];
 
     return results
         .map((e) => OfferModel.fromMarktguru(e as Map<String, dynamic>))
