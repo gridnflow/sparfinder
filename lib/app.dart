@@ -7,7 +7,6 @@ import 'presentation/screens/search/search_screen.dart';
 import 'presentation/screens/product_detail/product_detail_screen.dart';
 import 'presentation/screens/saved/saved_screen.dart';
 import 'presentation/screens/settings/settings_screen.dart';
-import 'presentation/widgets/app_open_ad_manager.dart';
 
 class SparFinderApp extends StatelessWidget {
   const SparFinderApp({super.key});
@@ -46,35 +45,14 @@ class _MainShell extends ConsumerStatefulWidget {
   ConsumerState<_MainShell> createState() => _MainShellState();
 }
 
-class _MainShellState extends ConsumerState<_MainShell> with WidgetsBindingObserver {
+class _MainShellState extends ConsumerState<_MainShell> {
   int _selectedIndex = 0;
-  final _appOpenAdManager = AppOpenAdManager();
 
   final _pages = const [
     HomeScreen(),
     SearchScreen(),
     SavedScreen(),
   ];
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    _appOpenAdManager.loadAd();
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _appOpenAdManager.showAdIfAvailable();
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
