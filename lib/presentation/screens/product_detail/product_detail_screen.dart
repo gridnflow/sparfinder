@@ -31,7 +31,8 @@ class ProductDetailScreen extends ConsumerWidget {
           SliverAppBar(
             expandedHeight: 220,
             pinned: true,
-            backgroundColor: AppTheme.accentOrange,
+            backgroundColor: AppTheme.surfaceWhite,
+            iconTheme: const IconThemeData(color: AppTheme.accentOrange),
             flexibleSpace: FlexibleSpaceBar(
               background: Hero(
                 tag: 'offer_image_${offer.id}',
