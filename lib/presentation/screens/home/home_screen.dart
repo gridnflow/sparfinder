@@ -317,6 +317,17 @@ class HomeScreen extends ConsumerWidget {
                 final left = deals[i];
                 final right = i + 1 < deals.length ? deals[i + 1] : null;
 
+                // 광고 먼저 삽입 (첫 행 제외, 3행마다)
+                if (cardRowCount > 0 && cardRowCount % 3 == 0) {
+                  rows.add(const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 4),
+                    child: AdBannerWidget(
+                      height: 60,
+                      adUnitId: AdBannerWidget.feedBannerId,
+                    ),
+                  ));
+                }
+
                 rows.add(_CardRow(
                   key: ValueKey(left.cheapest.id),
                   left: left,
@@ -330,17 +341,6 @@ class HomeScreen extends ConsumerWidget {
                       ref.read(savedOffersProvider.notifier).toggle(offer),
                 ));
                 cardRowCount++;
-
-                // 3행마다 광고 삽입 (마지막 행 제외)
-                if (cardRowCount % 3 == 0 && i + 2 < deals.length) {
-                  rows.add(const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 4),
-                    child: AdBannerWidget(
-                      height: 60,
-                      adUnitId: AdBannerWidget.feedBannerId,
-                    ),
-                  ));
-                }
               }
 
               return SliverPadding(
