@@ -339,6 +339,7 @@ class OfferCard extends StatelessWidget {
         child: CachedNetworkImage(
           imageUrl: imageUrl,
           fit: BoxFit.contain,
+          memCacheHeight: 260,
           placeholder: (context, url) => const ShimmerLoading(
             child: ShimmerBone(height: 106, borderRadius: 0),
           ),

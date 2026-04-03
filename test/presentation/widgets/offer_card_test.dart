@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sparfinder/domain/entities/offer.dart';
@@ -10,6 +11,7 @@ Offer _offer({
   double price = 1.09,
   double? originalPrice,
   String supermarketName = 'ALDI',
+  String? imageUrl,
   String? category,
   String? unit,
   DateTime? validUntil,
@@ -21,6 +23,7 @@ Offer _offer({
     price: price,
     originalPrice: originalPrice,
     supermarketName: supermarketName,
+    imageUrl: imageUrl,
     category: category,
     unit: unit,
     validUntil: validUntil,
@@ -196,6 +199,121 @@ void main() {
 
       // Should show just product name
       expect(find.text('Vollmilch'), findsOneWidget);
+    });
+
+    group('image loading', () {
+      testWidgets('shows placeholder icon when imageUrl is null',
+          (tester) async {
+        await tester.pumpWidget(_wrap(
+          OfferCard(offer: _offer(imageUrl: null)),
+        ));
+
+        // Placeholder should be shown — default icon for no category
+        expect(find.byIcon(Icons.shopping_basket), findsOneWidget);
+        // CachedNetworkImage should NOT be in the tree
+        expect(find.byType(CachedNetworkImage), findsNothing);
+      });
+
+      testWidgets('shows placeholder icon when imageUrl is empty string',
+          (tester) async {
+        await tester.pumpWidget(_wrap(
+          OfferCard(offer: _offer(imageUrl: '')),
+        ));
+
+        expect(find.byIcon(Icons.shopping_basket), findsOneWidget);
+        expect(find.byType(CachedNetworkImage), findsNothing);
+      });
+
+      testWidgets('uses CachedNetworkImage when imageUrl is provided',
+          (tester) async {
+        await tester.pumpWidget(_wrap(
+          OfferCard(
+            offer: _offer(
+              imageUrl:
+                  'https://mg2de.b-cdn.net/api/v1/offers/123/images/default/0/medium.webp',
+            ),
+          ),
+        ));
+
+        expect(find.byType(CachedNetworkImage), findsOneWidget);
+      });
+
+      testWidgets(
+          'shows category-specific placeholder icon for Milch category',
+          (tester) async {
+        await tester.pumpWidget(_wrap(
+          OfferCard(offer: _offer(imageUrl: null, category: 'Milchprodukte')),
+        ));
+
+        expect(find.byIcon(Icons.egg_outlined), findsOneWidget);
+      });
+
+      testWidgets(
+          'shows category-specific placeholder icon for Fleisch category',
+          (tester) async {
+        await tester.pumpWidget(_wrap(
+          OfferCard(offer: _offer(imageUrl: null, category: 'Fleisch')),
+        ));
+
+        expect(find.byIcon(Icons.restaurant), findsOneWidget);
+      });
+
+      testWidgets(
+          'shows category-specific placeholder icon for Obst & Gemüse',
+          (tester) async {
+        await tester.pumpWidget(_wrap(
+          OfferCard(
+              offer: _offer(imageUrl: null, category: 'Obst & Gemüse')),
+        ));
+
+        expect(find.byIcon(Icons.eco), findsOneWidget);
+      });
+
+      testWidgets(
+          'shows category-specific placeholder icon for Getränke',
+          (tester) async {
+        await tester.pumpWidget(_wrap(
+          OfferCard(offer: _offer(imageUrl: null, category: 'Getränke')),
+        ));
+
+        expect(find.byIcon(Icons.local_drink), findsOneWidget);
+      });
+
+      testWidgets(
+          'shows category-specific placeholder icon for Brot',
+          (tester) async {
+        await tester.pumpWidget(_wrap(
+          OfferCard(
+              offer:
+                  _offer(imageUrl: null, category: 'Brot & Backwaren')),
+        ));
+
+        expect(find.byIcon(Icons.bakery_dining), findsOneWidget);
+      });
+
+      testWidgets(
+          'shows category-specific placeholder icon for Fisch',
+          (tester) async {
+        await tester.pumpWidget(_wrap(
+          OfferCard(offer: _offer(imageUrl: null, category: 'Fisch')),
+        ));
+
+        expect(find.byIcon(Icons.set_meal), findsOneWidget);
+      });
+
+      testWidgets('placeholder container has expected background color',
+          (tester) async {
+        await tester.pumpWidget(_wrap(
+          OfferCard(offer: _offer(imageUrl: null)),
+        ));
+
+        // The placeholder should render with the light gray background
+        final container = find.byWidgetPredicate((w) =>
+            w is Container &&
+            w.decoration is BoxDecoration &&
+            (w.decoration as BoxDecoration).color == const Color(0xFFF8F9FA));
+        expect(container, findsWidgets);
+      });
     });
   });
 }
