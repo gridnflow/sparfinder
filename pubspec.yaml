@@ -2,7 +2,7 @@ name: sparfinder
 description: "AngebotsFuchs - Wöchentliche Angebote aller deutschen Supermärkte im Vergleich"
 publish_to: 'none'
 
-version: 1.0.0+4
+version: 1.0.0+6
 
 environment:
   sdk: ^3.10.8
