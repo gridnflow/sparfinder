@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AppOpenAdManager {
-  // 실제 광고 단위 ID (AdMob 콘솔에서 생성 후 교체)
-  static const String _adUnitId = 'ca-app-pub-6139362725426823/XXXXXXXXXX';
+  static const String _adUnitId = 'ca-app-pub-6139362725426823/2762145308';
 
   AppOpenAd? _appOpenAd;
   bool _isLoading = false;
@@ -13,8 +12,7 @@ class AppOpenAdManager {
   static const _adExpireHours = 4;
 
   bool get _isAdAvailable {
-    if (_appOpenAd == null) return false;
-    if (_loadTime == null) return false;
+    if (_appOpenAd == null || _loadTime == null) return false;
     return DateTime.now().difference(_loadTime!).inHours < _adExpireHours;
   }
 

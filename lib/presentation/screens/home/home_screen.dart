@@ -7,12 +7,26 @@ import '../../../domain/entities/offer.dart';
 import '../../widgets/offer_card.dart';
 import '../../widgets/ad_banner.dart';
 import '../../widgets/shimmer_loading.dart';
+import '../../widgets/interstitial_ad_manager.dart';
 import 'home_providers.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
-  void _showZipDialog(BuildContext context, WidgetRef ref, String currentZip) {
+  @override
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  final _interstitialAdManager = InterstitialAdManager();
+
+  @override
+  void initState() {
+    super.initState();
+    _interstitialAdManager.loadAd();
+  }
+
+  void _showZipDialog(BuildContext context, String currentZip) {
     final controller = TextEditingController(text: currentZip);
     showDialog(
       context: context,
@@ -29,7 +43,7 @@ class HomeScreen extends ConsumerWidget {
             counterText: '',
           ),
           onSubmitted: (v) {
-            _saveZip(context, ref, v);
+            _saveZip(context, v);
             Navigator.of(ctx).pop();
           },
         ),
@@ -40,7 +54,7 @@ class HomeScreen extends ConsumerWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              _saveZip(context, ref, controller.text);
+              _saveZip(context, controller.text);
               Navigator.of(ctx).pop();
             },
             child: const Text('Speichern'),
@@ -50,7 +64,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  void _saveZip(BuildContext context, WidgetRef ref, String zip) {
+  void _saveZip(BuildContext context, String zip) {
     final trimmed = zip.trim();
     if (trimmed.length != 5 || int.tryParse(trimmed) == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -75,7 +89,7 @@ class HomeScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final zipCode = ref.watch(zipCodeProvider);
     final selectedSupermarket = ref.watch(selectedSupermarketProvider);
     final weeklyDeals = ref.watch(weeklyDealsProvider);
@@ -103,7 +117,7 @@ class HomeScreen extends ConsumerWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => _showZipDialog(context, ref, zipCode),
+                  onTap: () => _showZipDialog(context, zipCode),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -333,10 +347,13 @@ class HomeScreen extends ConsumerWidget {
                   left: left,
                   right: right,
                   savedOfferIds: savedOfferIds,
-                  onTap: (offer) => Navigator.of(context).pushNamed(
-                    '/product',
-                    arguments: offer,
-                  ),
+                  onTap: (offer) {
+                    _interstitialAdManager.showAdIfAvailable();
+                    Navigator.of(context).pushNamed(
+                      '/product',
+                      arguments: offer,
+                    );
+                  },
                   onSave: (offer) =>
                       ref.read(savedOffersProvider.notifier).toggle(offer),
                 ));
