@@ -30,10 +30,10 @@ class InterstitialAdManager {
     );
   }
 
-  // 3번 탭마다 1번 표시 (사용자 경험 보호)
+  // 5번 탭마다 1번 표시 (사용자 경험 보호)
   void showAdIfAvailable() {
     _showCount++;
-    if (_showCount % 3 != 0) return;
+    if (_showCount % 5 != 0) return;
 
     if (_interstitialAd == null) {
       loadAd();
