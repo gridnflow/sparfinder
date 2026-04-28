@@ -85,10 +85,12 @@ class ProductDetailScreen extends ConsumerWidget {
                   Text(
                     offer.productName,
                     style: const TextStyle(
-                      fontSize: 28,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: AppTheme.textPrimary,
                     ),
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   if (offer.unit != null)
                     Text(
@@ -274,58 +276,64 @@ class _CurrentOfferCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(info.emoji,
-                      style: const TextStyle(fontSize: 16)),
-                  const SizedBox(width: 8),
-                  Text(
-                    offer.supermarketName,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 14,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(info.emoji,
+                        style: const TextStyle(fontSize: 16)),
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: Text(
+                        offer.supermarketName,
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 4),
-              Text(
-                PriceFormatter.format(offer.price),
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
+                  ],
                 ),
-              ),
-              if (offer.originalPrice != null) ...[
+                const SizedBox(height: 4),
                 Text(
-                  PriceFormatter.format(offer.originalPrice!),
+                  PriceFormatter.format(offer.price),
                   style: const TextStyle(
-                    color: Colors.white60,
-                    fontSize: 16,
-                    decoration: TextDecoration.lineThrough,
-                    decorationColor: Colors.white60,
-                  ),
-                ),
-                Text(
-                  PriceFormatter.savedAmount(
-                      offer.originalPrice!, offer.price),
-                  style: const TextStyle(
-                    color: AppTheme.bestDealGold,
+                    color: Colors.white,
+                    fontSize: 28,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                if (offer.originalPrice != null) ...[
+                  Text(
+                    PriceFormatter.format(offer.originalPrice!),
+                    style: const TextStyle(
+                      color: Colors.white60,
+                      fontSize: 14,
+                      decoration: TextDecoration.lineThrough,
+                      decorationColor: Colors.white60,
+                    ),
+                  ),
+                  Text(
+                    PriceFormatter.savedAmount(
+                        offer.originalPrice!, offer.price),
+                    style: const TextStyle(
+                      color: AppTheme.bestDealGold,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
               ],
-            ],
+            ),
           ),
-          const Spacer(),
           if (offer.hasDiscount)
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(10),
               decoration: const BoxDecoration(
                 color: Colors.red,
                 shape: BoxShape.circle,
@@ -336,7 +344,7 @@ class _CurrentOfferCard extends StatelessWidget {
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
-                  fontSize: 13,
+                  fontSize: 12,
                 ),
               ),
             ),
@@ -375,12 +383,15 @@ class _ValidityBar extends StatelessWidget {
         children: [
           Icon(Icons.calendar_today, size: 16, color: Colors.amber[700]),
           const SizedBox(width: 8),
-          Text(
-            text,
-            style: TextStyle(
-              color: Colors.amber[800],
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                color: Colors.amber[800],
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
